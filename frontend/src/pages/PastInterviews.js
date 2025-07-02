@@ -9,19 +9,26 @@ function PastInterviews() {
   const userEmail = localStorage.getItem("email"); // ✅ Ensure email is stored on login
 
   useEffect(() => {
-    async function fetchReports() {
-      try {
-        const res = await axios.get(`http://localhost:8000/past-interviews/${userEmail}`);
-        setPastReports(res.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
-        setLoading(false);
-      }
-    }
+  async function fetchReports() {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/past-interviews/${userEmail}`
+);
 
-    if (userEmail) fetchReports();
-  }, [userEmail]);
+      // ✅ Sort by oldest first (Interview 1 = oldest)
+      const sortedReports = res.data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      setPastReports(sortedReports);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
+      setLoading(false);
+    }
+  }
+
+  if (userEmail) fetchReports();
+}, [userEmail]);
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-blue-200 px-6 py-20 font-sans">
@@ -43,17 +50,9 @@ function PastInterviews() {
               <div key={index} className="bg-indigo-50 border border-indigo-200 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-bold text-indigo-700">
-  📅 {report.timestamp
-    ? new Date(report.timestamp).toLocaleDateString("en-IN", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "Invalid Date"}
+  🧾 Interview {index + 1}
 </h3>
+
 
                   <span className="text-sm font-medium text-indigo-500">{report.role}</span>
                 </div>
