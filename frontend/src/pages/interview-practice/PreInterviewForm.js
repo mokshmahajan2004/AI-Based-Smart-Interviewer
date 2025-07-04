@@ -67,6 +67,7 @@ const PreInterviewForm = () => {
   const handleSubmit = (e) => {
   e.preventDefault();
   const newErrors = {};
+  if (!formData.name.trim()) newErrors.name = "Name is required.";
   if (!formData.email.trim()) newErrors.email = "Email is required.";
   if (!roleInput.trim()) newErrors.role = "Please enter your desired role.";
   if (formData.skills.length === 0)
@@ -115,10 +116,6 @@ useEffect(() => {
   if (stored.role) {
     setRoleInput(stored.role);
     setIsRoleFromStorage(true); // ✅ disables role edit
-  }
-
-  if (stored.name) {
-    setFormData((prev) => ({ ...prev, name: stored.name }));
   }
 }, []);
 
@@ -209,7 +206,7 @@ return (
                 .then((res) => {
                   const questions = res.data.questions;
                   localStorage.setItem("interviewQuestions", JSON.stringify(questions));
-                  localStorage.setItem("interviewProfile", JSON.stringify({ email: formData.email }));
+                  localStorage.setItem("interviewProfile", JSON.stringify({ email, role }));
                   navigate("/start-interview");
                 })
                 .catch((err) => {
@@ -290,13 +287,14 @@ return (
   <label className="block text-sm mb-1 text-gray-400">
     Name <span className="text-red-500">*</span>
   </label>
-  <input
-      type="text"
-      name="name"
-      value={formData.name}
-      disabled
-      className="bg-[#1e293b] text-gray-400 border border-gray-600 p-3 rounded-md w-full cursor-not-allowed focus:outline-none"
-    />
+ <input
+  type="text"
+  name="name"
+  value={formData.name}
+  onChange={handleChange}
+  placeholder="Enter your full name"
+  className="bg-[#1e293b] text-white border border-gray-600 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-gray-400"
+/>
      {errors.name && (
       <p className="text-red-400 text-sm mt-1">{errors.name}</p>
     )}
@@ -366,8 +364,8 @@ return (
       {errors.role && (
         <p className="text-red-400 text-sm mt-1">{errors.role}</p>
       )}
-      {roleInput && activeRoleIndex !== -2 && (
-        <ul className="absolute top-full left-0 right-0 bg-[#0f172a] border border-gray-700 rounded-md mt-1 max-h-40 overflow-auto z-10">
+      {roleInput && !isRoleFromStorage && activeRoleIndex !== -2 && (
+  <ul className="absolute top-full left-0 right-0 bg-[#0f172a] border border-gray-700 rounded-md mt-1 max-h-40 overflow-auto z-10">
           {roleSuggestions
             .filter((r) =>
               r.toLowerCase().includes(roleInput.toLowerCase())
