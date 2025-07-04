@@ -17,7 +17,7 @@ from firebase import save_report_metadata
 from utils.resume_reader import read_resume_file  
 
 # Schemas
-from api.schemas import CandidateProfile, QAInput
+from api.schemas import CandidateProfile, QAInput, ReportRequest
 
 # Firebase
 from firebase_admin import firestore
@@ -70,28 +70,20 @@ def text_to_speech_endpoint(input: TTSInput):
 # 5. Generate Interview Report & Upload
 # ----------------------------------------
 @router.post("/generate-report")
-def generate_report_endpoint(
-    name: str = Body(...),
-    email: str = Body(...),
-    role: str = Body(...),
-    skills: str = Body(...),
-    experience: str = Body(...),
-    achievements: str = Body(...),
-    notes: str = Body(...),
-    qa_feedback: list = Body(...)
-):
-    # ✅ 1. Generate report and get its metadata
+def generate_report_endpoint(data: ReportRequest):
     report = generate_report(
-        name, email, role,
-        skills, experience,
-        achievements, notes,
-        qa_feedback
+        data.name,
+        data.email,
+        data.role,
+        data.skills,
+        data.experience,
+        data.achievements,
+        data.notes,
+        [q.dict() for q in data.qa_feedback]
     )
 
-    # ✅ 2. Save metadata to Firestore
     save_report_metadata(report)
 
-    # ✅ 3. Return cloudinary link and info
     return {
         "message": "Report generated and stored",
         "cloudinary_url": report["url"],
