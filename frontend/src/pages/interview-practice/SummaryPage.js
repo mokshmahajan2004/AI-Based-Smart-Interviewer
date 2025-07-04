@@ -116,7 +116,13 @@ const SummaryPage = () => {
 
     // 📄 Send data to backend to generate report
     const reportData = {
-      ...profile,
+      name: profile.name || "",
+      email: profile.email || "",
+      role: profile.role || "",
+      skills: profile.skills || "",
+      experience: profile.experience || "",
+      achievements: profile.achievements || "",
+      notes: profile.notes || "",
       qa_feedback: filledResponses.map((q, idx) => ({
         idx: idx + 1,
         question: q.question,

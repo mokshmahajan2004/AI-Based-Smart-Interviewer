@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 
+class QAInput(BaseModel):
+    idx: int
+    question: str
+    answer: str
+    feedback: str
+
 class CandidateProfile(BaseModel):
     name: str
     email: str
@@ -9,6 +15,6 @@ class CandidateProfile(BaseModel):
     achievements: str
     notes: str
 
-class QAInput(BaseModel):
-    question: str
-    answer: str
+# This is only for the report endpoint
+class ReportRequest(CandidateProfile):
+    qa_feedback: list[QAInput]
