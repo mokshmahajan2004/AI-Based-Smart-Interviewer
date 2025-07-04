@@ -82,7 +82,11 @@ const PreInterviewForm = () => {
   };
 
   // ✅ Store into localStorage so next time user visits, it is pre-filled
-localStorage.setItem("interviewProfile", JSON.stringify({ email: formData.email, role: roleInput }));
+localStorage.setItem("interviewProfile", JSON.stringify({
+  name: formData.name,
+  email: formData.email,
+  role: roleInput
+}));
   setIsLoading(true); // ✅ show loader
 
   axios
@@ -103,14 +107,21 @@ localStorage.setItem("interviewProfile", JSON.stringify({ email: formData.email,
 
 useEffect(() => {
   const stored = JSON.parse(localStorage.getItem("interviewProfile") || "{}");
+
   if (stored.email) {
     setFormData((prev) => ({ ...prev, email: stored.email }));
   }
+
   if (stored.role) {
     setRoleInput(stored.role);
-    setIsRoleFromStorage(true); // ✅ track for disabling role in manual mode
+    setIsRoleFromStorage(true); // ✅ disables role edit
+  }
+
+  if (stored.name) {
+    setFormData((prev) => ({ ...prev, name: stored.name }));
   }
 }, []);
+
 
   // ✅ Show beautiful Lottie loader while generating questions
   if (isLoading) {
@@ -169,7 +180,7 @@ return (
   Choose how you'd like to start — upload your resume or fill details manually.
 </p>
 
-        {/* Upload Resume Mode */}
+                {/* Upload Resume Mode */}
         {mode === "resume" && (
           <form
             onSubmit={(e) => {
@@ -178,17 +189,20 @@ return (
                 setErrors({ email: "Email is required." });
                 return;
               }
+              if (!resumeFile) {
+                alert("Please upload your resume before starting the interview.");
+                return;
+              }
 
               setIsLoading(true);
               const form = new FormData();
               const storedProfile = JSON.parse(localStorage.getItem("interviewProfile") || "{}");
-const email = storedProfile.email || formData.email;
-const role = storedProfile.role || roleInput;
+              const email = storedProfile.email || formData.email;
+              const role = storedProfile.role || roleInput;
 
-form.append("email", email);
-form.append("role", role);
-form.append("resume", resumeFile);
-
+              form.append("email", email);
+              form.append("role", role);
+              form.append("resume", resumeFile);
 
               axios
                 .post(`${process.env.REACT_APP_BACKEND_URL}/generate-questions-from-resume`, form)
@@ -207,40 +221,39 @@ form.append("resume", resumeFile);
             className="space-y-3 md:space-y-4"
           >
             <div>
-  <label className="block text-sm mb-0.5 text-gray-400">
-    Email <span className="text-red-500">*</span>
-  </label>
-  <input
-  type="email"
-  name="email"
-  value={formData.email}
-  disabled
-  className="bg-[#1e293b] text-gray-400 border border-gray-600 p-3 rounded-md w-full cursor-not-allowed focus:outline-none"
-/>
-</div>
-<div>
-  <label className="block text-sm mb-1 text-gray-400">
-    Role <span className="text-red-500">*</span>
-  </label>
- <input
-  type="text"
-  name="role"
-  value={roleInput}
-  onChange={(e) => setRoleInput(e.target.value)}
-  disabled={isRoleFromStorage && mode === "manual"} // ✅ disable only in manual mode
-  placeholder="e.g. Frontend Developer"
-  className={`bg-[#1e293b] ${
-    isRoleFromStorage && mode === "manual"
-      ? "text-gray-400 cursor-not-allowed"
-      : "text-white"
-  } border border-gray-600 p-3 rounded-md w-full focus:outline-none placeholder-gray-400`}
-/>
-
-</div>
+              <label className="block text-sm mb-0.5 text-gray-400">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                disabled
+                className="bg-[#1e293b] text-gray-400 border border-gray-600 p-3 rounded-md w-full cursor-not-allowed focus:outline-none"
+              />
+            </div>
             <div>
               <label className="block text-sm mb-1 text-gray-400">
-                Upload Resume (PDF)
+                Role <span className="text-red-500">*</span>
               </label>
+              <input
+                type="text"
+                name="role"
+                value={roleInput}
+                onChange={(e) => setRoleInput(e.target.value)}
+                disabled={isRoleFromStorage && mode === "manual"}
+                placeholder="e.g. Frontend Developer"
+                className={`bg-[#1e293b] ${
+                  isRoleFromStorage && mode === "manual"
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-white"
+                } border border-gray-600 p-3 rounded-md w-full focus:outline-none placeholder-gray-400`}
+              />
+            </div>
+            <div>
+             <label className="block text-sm mb-1 text-gray-400">
+  Upload Resume (PDF) <span className="text-red-500">*</span>
+</label>
               <input
                 type="file"
                 name="resume"
@@ -248,27 +261,21 @@ form.append("resume", resumeFile);
                 onChange={(e) => setResumeFile(e.target.files[0])}
                 className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-400 file:text-black hover:file:bg-yellow-500"
               />
-              
-              {/* ✅ Show selected file name if resume is picked */}
-  {resumeFile && (
-    <p className="text-sm text-green-400 mt-1">📄 {resumeFile.name}</p>
-  )}
-  
+              {resumeFile && (
+                <p className="text-sm text-green-400 mt-1">📄 {resumeFile.name}</p>
+              )}
             </div>
-            
-
             <button
   type="submit"
-  disabled={!formData.email || !roleInput || formData.skills.length === 0}
+  disabled={!formData.email || !roleInput || !resumeFile} // 🔒 resumeFile required
   className={`w-full mt-4 font-bold py-3 rounded-lg text-lg transition-all duration-300 ${
-    !formData.email || !roleInput || formData.skills.length === 0
+    !formData.email || !roleInput || !resumeFile
       ? "bg-gray-500 cursor-not-allowed"
       : "bg-yellow-400 hover:bg-yellow-500 text-black"
   }`}
 >
   Start Interview 🚀
 </button>
-
           </form>
         )}
 
@@ -278,20 +285,22 @@ form.append("resume", resumeFile);
             {/* Name */}
            {/* Row for Name & Email */}
 <div className="flex flex-col md:flex-row gap-6">
-  {/* Name */}
-  <div className="flex-1">
-    <label className="block text-sm mb-1 text-gray-400">
-      Name <span className="text-red-500">*</span>
-    </label>
-    <input
+{/* Name */}
+<div className="flex-1">
+  <label className="block text-sm mb-1 text-gray-400">
+    Name <span className="text-red-500">*</span>
+  </label>
+  <input
       type="text"
       name="name"
-      placeholder="Your Name"
       value={formData.name}
-      onChange={handleChange}
-      className="bg-[#1e293b] border border-gray-600 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+      disabled
+      className="bg-[#1e293b] text-gray-400 border border-gray-600 p-3 rounded-md w-full cursor-not-allowed focus:outline-none"
     />
-  </div>
+     {errors.name && (
+      <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+    )}
+</div>
 
   {/* Email */}
   <div className="flex-1">
