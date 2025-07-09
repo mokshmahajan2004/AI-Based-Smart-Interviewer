@@ -18,3 +18,7 @@ class CandidateProfile(BaseModel):
 # This is only for the report endpoint
 class ReportRequest(CandidateProfile):
     qa_feedback: list[QAInput]
+
+class EvaluateRequest(BaseModel):
+    question: str
+    answer: str
