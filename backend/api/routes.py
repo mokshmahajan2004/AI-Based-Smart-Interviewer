@@ -17,7 +17,7 @@ from firebase import save_report_metadata
 from utils.resume_reader import read_resume_file  
 
 # Schemas
-from api.schemas import CandidateProfile, QAInput, ReportRequest
+from api.schemas import CandidateProfile, QAInput, ReportRequest,EvaluateRequest
 
 # Firebase
 from firebase_admin import firestore
@@ -36,7 +36,7 @@ def get_questions(profile: CandidateProfile):
 # 2. Evaluate Interview Answer
 # ----------------------------------------
 @router.post("/evaluate/")
-def get_evaluation(data: QAInput):
+def get_evaluation(data: EvaluateRequest):
     feedback = evaluate_answer(data.question, data.answer)
     return {"feedback": feedback}
 
