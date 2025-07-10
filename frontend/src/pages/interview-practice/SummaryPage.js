@@ -199,7 +199,7 @@ const SummaryPage = () => {
       </div>
 */}
           {/* Candidate Info */}
-          <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg mb-8">
+          <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg mb-0">
             <h3 className="text-lg font-semibold mb-2">🧾 Candidate Details</h3>
             <p>
               <strong>Name:</strong> {userProfile.name}
@@ -218,7 +218,7 @@ const SummaryPage = () => {
           {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
             {/* Pie */}
-            <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg">
+            {/* <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-center mb-4">
                 🧪 Answered vs Unanswered
               </h3>
@@ -241,10 +241,10 @@ const SummaryPage = () => {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
+            </div> */}
 
             {/* Bar */}
-            <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg">
+            {/* <div className="bg-[#0f172a] border border-gray-600 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-center mb-4">
                 📈 Score per Question
               </h3>
@@ -258,7 +258,7 @@ const SummaryPage = () => {
                   <Bar dataKey="Score" fill="#60a5fa" />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+            </div> */}
           </div>
 
           {/* Questions Summary */}
@@ -275,21 +275,92 @@ const SummaryPage = () => {
                 <h4 className="font-semibold text-blue-300 mb-2">
                   {item.question}
                 </h4>
-                <p>
-                  <strong>Status:</strong> {item.status.toUpperCase()}
+
+                <p className="text-sm">
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={
+                      item.status === "answered"
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }
+                  >
+                    {item.status.toUpperCase()}
+                  </span>
                 </p>
-                <p>
-                  <strong>Answer:</strong> {item.answer || "-"}
+
+                <p className="text-sm mt-1">
+                  <strong>Answer:</strong>{" "}
+                  <span className="text-gray-300">{item.answer || "-"}</span>
                 </p>
-                {/* <p>
-                  <strong>Score:</strong> {item.score ?? "Not Rated"}/10
-                </p> */}
-                <p>
-                  <strong>Feedback:</strong> {item.feedback || "N/A"}
-                </p>
-                {/* <p>
-                  <strong>Improvement:</strong> {item.improvement || "N/A"}
-                </p> */}
+
+                <div className="mt-3 border-t border-gray-600 pt-3 text-sm">
+                  <p className="font-semibold text-yellow-400">
+                    🧠 AI Feedback:
+                  </p>
+
+                  {item.feedback ? (
+                    <div className="text-gray-300 space-y-1 mt-1">
+                      {item.feedback
+                        .split("\n")
+                        .filter(
+                          (line) =>
+                            !line.toLowerCase().startsWith("question:") &&
+                            !line.toLowerCase().startsWith("answer:")
+                        )
+                        .map((line, index) => {
+                          const trimmed = line.trim();
+
+                          // Clean for comparison
+                          const cleanLine = trimmed
+                            .toLowerCase()
+                            .replace(/\*/g, "")
+                            .replace(/[:]/g, "")
+                            .trim();
+
+                          // 🔶 Header detection (with or without formatting)
+                          if (
+                            cleanLine === "scores" ||
+                            cleanLine === "feedback"
+                          ) {
+                            return (
+                              <h4
+                                key={index}
+                                className="text-yellow-300 text-base font-bold mt-3"
+                              >
+                                {cleanLine.charAt(0).toUpperCase() +
+                                  cleanLine.slice(1)}
+                              </h4>
+                            );
+                          }
+
+                          // 🔷 Bullet points
+                          if (
+                            trimmed.startsWith("*") ||
+                            trimmed.startsWith("-")
+                          ) {
+                            return (
+                              <li
+                                key={index}
+                                className="ml-4 list-disc text-sm"
+                              >
+                                {trimmed.replace(/^[-*]\s*/, "")}
+                              </li>
+                            );
+                          }
+
+                          // 🟢 Default paragraph
+                          return (
+                            <p key={index} className="text-sm">
+                              {trimmed}
+                            </p>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <p className="text-gray-400">N/A</p>
+                  )}
+                </div>
               </div>
             ))}
           </div>
