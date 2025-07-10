@@ -3,9 +3,9 @@ import ReactMarkdown from "react-markdown";
 
 const ResultCard = ({ title, icon, content }) => {
   // If content is an array, convert it to markdown bullet points
-  const markdownContent = Array.isArray(content)
-    ? content.map((item) => `- ${item}`).join("\n")
-    : content;
+const markdownContent = Array.isArray(content)
+  ? content.join("\n")
+  : content;
 
   return (
     <div className="mb-8 p-6 rounded-xl border border-gray-700 bg-[#0f172a] shadow-lg">
