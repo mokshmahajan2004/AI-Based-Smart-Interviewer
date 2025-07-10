@@ -7,7 +7,7 @@ import ResultCard from "../components/ResultCard";
 import sampleJobRolesData from "../data/sampleJobRolesData"; // dynamic job data
 import BulletRewriter from "../components/BulletRewritter";
 import Loader from "../components/Loader";
-//Chal pad bsdk
+
 const ResumeScreening = () => {
   const [step, setStep] = useState(1);
   const [resume, setResume] = useState(null);
