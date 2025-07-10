@@ -273,7 +273,7 @@ const SummaryPage = () => {
                 } bg-[#0f172a]`}
               >
                 <h4 className="font-semibold text-blue-300 mb-2">
-                  Q{idx + 1}: {item.question}
+                  {item.question}
                 </h4>
                 <p>
                   <strong>Status:</strong> {item.status.toUpperCase()}
