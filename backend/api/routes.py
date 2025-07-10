@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 
 # Services
-from services.interviewer import generate_questions
+from services.interviewer import generate_questions, generate_questions_from_resume_text
 from services.evaluator import evaluate_answer
 from services.ats import evaluate_resume
 from services.report_generator import generate_report
@@ -153,4 +153,26 @@ def get_past_reports(email: str):
             })
 
     return results
+
+@router.post("/generate-questions-from-resume")
+async def generate_questions_from_resume(
+    email: str = Form(...),
+    role: str = Form(...),
+    resume: UploadFile = File(...)
+):
+    try:
+        content = await resume.read()
+        resume_text = read_resume_file(resume.filename, content)
+        resume_text = resume_text[:5000]  # optional truncate if resume is very long
+
+        questions = generate_questions_from_resume_text(
+            resume_text=resume_text,
+            role=role,
+            email=email
+        )
+
+        return {"questions": questions.strip().split("\n")}
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
