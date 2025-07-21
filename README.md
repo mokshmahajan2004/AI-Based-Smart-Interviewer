@@ -2,7 +2,7 @@
 
 Hireonix is an AI-powered platform that helps job seekers identify skill gaps, prepare for interviews, and enhance their resumes with personalized feedback and practice sessions. It combines smart mock interviews, resume screening, and voice-based evaluations into a single powerful tool.
 
-![Hireonix Banner](./assets/hireonix-banner.png) <!-- Replace with actual image path or remove this line if not using -->
+![Hireonix Banner](./assets/hireonix-banner.png) <!-- Replace with actual image path -->
 
 ---
 
@@ -10,33 +10,45 @@ Hireonix is an AI-powered platform that helps job seekers identify skill gaps, p
 
 - 🎤 **Mock Interviews with AI Evaluation**
 - 📄 **Resume Screening with ATS Compatibility Scoring**
-- 🎯 **Skill & Role-Based Question Generation**
-- 🧠 **Smart Feedback on Fluency, Clarity, Confidence**
-- 📊 **Post-Interview Performance Reports**
-- 📝 **Resume Bullet Suggestions & Rewrites**
-- ☁️ **Audio Transcription & TTS using Whisper/OpenAI**
+- 🎯 **Skill, Role & Resume-Based Question Generation**
+- 🧠 **Smart Feedback on Fluency, Clarity, and Confidence**
+- 📊 **Post-Interview Performance Reports with Strengths & Weaknesses**
+- 📝 **Resume Bullet Suggestions & AI-Powered Rewrites**
+- 🧾 **Pre-Interview Form with Role, Skills, and Achievements**
+- 📑 **Personalized Question Sets Using Mixtral-8x7B LLM**
+- ☁️ **Audio Transcription using Whisper & TTS using pyttsx3 (offline)**
 
 ---
 
 ## 🔧 Tech Stack
 
-| Frontend               | Backend          | AI/ML Services           | Database            | Storage                |
-|------------------------|------------------|--------------------------|---------------------|------------------------|
-| React.js (Tailwind CSS)| FastAPI (Python) | OpenAI GPT, Whisper      | Firebase Firestore  | Firebase / Cloudinary  |
-
+| Frontend               | Backend          | AI/ML Services            | Database            | Storage                |
+|------------------------|------------------|---------------------------|---------------------|------------------------|
+| React.js (Tailwind CSS)| FastAPI (Python) | Mixtral-8x7B, OpenAI Whisper, pyttsx3 (TTS) | Firebase Firestore  | Firebase / Cloudinary  |
 
 ---
 
 ## 🧪 How It Works
 
-1. **User logs in** and fills a pre-interview form with role, skills, and experience.
-2. **AI generates** personalized questions using Mixtral-8x7B.
-3. **User responds via voice**, which is transcribed using Whisper.
-4. **AI evaluates** each answer for fluency, clarity, and relevance.
-5. **Final report** summarizes scores, feedback, and improvement tips.
-6. **Resume screening** checks JD alignment and rewrites weak resume bullets.
+1. **User logs in** and fills a pre-interview form with name, role, skills, experience, and achievements.
+2. **Mixtral-8x7B LLM** generates personalized interview questions based on:
+   - Role
+   - Skills
+   - Resume content (if uploaded)
+3. **User answers via voice**, which is transcribed using **Whisper**.
+4. **AI evaluates** answers on:
+   - Fluency
+   - Clarity
+   - Confidence
+   - Relevance
+5. **Detailed report** is generated with:
+   - Score summary (per question and overall)
+   - Unanswered/skipped questions
+   - Strengths and weaknesses
+6. **Resume screening** matches resume against job description and rewrites weak bullet points.
 
 ---
+
 ## 🚀 Run Locally
 
 ### 1. Clone the Repository
@@ -44,14 +56,17 @@ Hireonix is an AI-powered platform that helps job seekers identify skill gaps, p
 ```bash
 git clone https://github.com/your-username/hireonix.git
 cd hireonix
-```
 
+
+```
 ### 2. Frontend Setup
 
 ```bash
 cd frontend
 npm install
 npm run dev
+
+
 ```
 
 ### 3. Backend Setup
