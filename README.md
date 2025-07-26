@@ -2,7 +2,7 @@
 
 Hireonix is an AI-powered platform that helps job seekers identify skill gaps, prepare for interviews, and enhance their resumes with personalized feedback and practice sessions. It combines smart mock interviews, resume screening, and voice-based evaluations into a single powerful tool.
 
-![Hireonix Banner](./assets/hireonix-banner.png) <!-- Replace with actual image path -->
+<img src="/frontend/src/assets/hireonix-banner.jpg" alt="Hireonix Banner" width="350" height="350">
 
 ---
 
