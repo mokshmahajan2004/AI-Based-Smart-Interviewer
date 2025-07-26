@@ -4,6 +4,7 @@ Hireonix is an AI-powered platform that helps job seekers identify skill gaps, p
 <div align="center">
   <img src="/frontend/src/assets/hireonix-banner.jpg" alt="Hireonix Banner" width="350" height="350">
 </div>
+
 ---
 
 ## 🌟 Features
